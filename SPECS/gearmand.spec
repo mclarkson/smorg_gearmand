@@ -1,5 +1,5 @@
 Summary: Gearman Server and C Library
-Name: gearmand
+Name: smorg-gearmand
 Version: 0.14
 Release: 1
 License: BSD
@@ -9,7 +9,7 @@ URL: http://www.gearman.org/
 
 Packager: Brian Aker <brian@tangent.org>
 
-Source: http://launchpad.net/gearmand/trunk/%{version}/+download/gearmand-%{version}.tar.gz
+#Source: http://launchpad.net/gearmand/trunk/%{version}/+download/gearmand-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description

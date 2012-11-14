@@ -10,7 +10,7 @@ URL: http://www.gearman.org/
 Packager: Brian Aker <brian@tangent.org>
 
 #Source: http://launchpad.net/gearmand/trunk/%{version}/+download/gearmand-%{version}.tar.gz
-Source: smorg-gearman-0.14.tar.gz
+Source: smorg-gearmand-0.14.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description

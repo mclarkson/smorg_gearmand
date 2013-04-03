@@ -12,7 +12,7 @@ Packager: Brian Aker <brian@tangent.org>
 
 #Source: http://launchpad.net/gearmand/trunk/%{version}/+download/gearmand-%{version}.tar.gz
 Source: smorg-gearmand-0.25.tar.gz
-Source1: gearmand.init
+#Source1: gearmand.init
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -56,7 +56,7 @@ mkdir -p $RPM_BUILD_ROOT/
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 mkdir -p $RPM_BUILD_ROOT/var/log/gearmand
 mkdir -p $RPM_BUILD_ROOT/var/run/gearmand
-install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gearmand
+install -m 755 %{_tmppath}/%{name}-%{version}-%{release}/support/gearmand.init $RPM_BUILD_ROOT/etc/rc.d/init.d/gearmand
 
 %clean
 %{__rm} -rf %{buildroot}

@@ -56,7 +56,7 @@ mkdir -p $RPM_BUILD_ROOT/
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 mkdir -p $RPM_BUILD_ROOT/var/log/gearmand
 mkdir -p $RPM_BUILD_ROOT/var/run/gearmand
-install -m 755 %{_tmppath}/%{name}-%{version}-%{release}/support/gearmand.init $RPM_BUILD_ROOT/etc/rc.d/init.d/gearmand
+install -m 755 %{_tmppath}/%{name}-%{version}/support/gearmand.init $RPM_BUILD_ROOT/etc/rc.d/init.d/gearmand
 
 %clean
 %{__rm} -rf %{buildroot}

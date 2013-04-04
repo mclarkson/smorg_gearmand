@@ -133,7 +133,7 @@ for PKG in `( cd SPECS; ls *.spec )`; do
 #
 #        rm -rf TMP/${NAME}-${VERSION}
 
-        # Especially for boost141:
+        # Especially for boost141 (only RH5 needs this):
         export LIBRARY_PATH=/usr/lib64/boost141:/usr/lib/boost141
         export LD_LIBRARY_PATH=/usr/lib64/boost141:/usr/lib/boost141
         export CPATH=/usr/include/boost141

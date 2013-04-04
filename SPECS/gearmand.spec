@@ -1,3 +1,6 @@
+# Disable compressing/stripping
+%define __os_install_post %{nil}
+# boost differences between el5 and el6
 %define boost boost-program-options
 %if "%{?dist}" == ".el5"
 %define boost boost141-program-options

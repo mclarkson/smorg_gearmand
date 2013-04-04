@@ -1,3 +1,8 @@
+%define boost boost-program-options
+%if "%{?dist}" == ".el5"
+%define boost boost141-program-options
+%endif
+
 Summary: Gearman Server and C Library
 Name: smorg-gearmand
 Version: 0.25
@@ -6,7 +11,7 @@ License: BSD
 Group: System Environment/Libraries
 BuildRequires: gcc-c++
 URL: http://launchpad.net/gearmand
-Requires: sqlite, libevent >= 1.4, boost141-program-options >=  1.39
+Requires: sqlite, libevent >= 1.4, %boost >=  1.39
 
 Packager: Brian Aker <brian@tangent.org>
 

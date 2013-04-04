@@ -22,8 +22,8 @@ for DIR in SOURCES SPECS; do
 done
 
 rm -rf TMP
-mkdir -p TMP BUILD RPMS SRPMS|| exit 1 
-rm -rf TMP/* BUILD/* RPMS/* SRPMS/*|| exit 1
+mkdir -p TMP BUILD BUILDROOT RPMS SRPMS|| exit 1 
+rm -rf TMP/* BUILDROOT/* BUILD/* RPMS/* SRPMS/*|| exit 1
 
 for BINARY in rpm rpmbuild; do 
         if [ ! -x "`which ${BINARY} 2> /dev/null`" ]; then 

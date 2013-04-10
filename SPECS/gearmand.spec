@@ -31,7 +31,7 @@ This package provides the client utilities.
 %package server
 Summary: Gearmand Server
 Group: Applications/Databases
-Requires: sqlite, libevent >= 1.4, boost-program-options >=  1.39
+Requires: sqlite, libevent >= 1.4, %boost >=  1.39
 
 %description server
 Gearman provides a generic framework to farm out work to other machines, dispatching function calls to machines that are better suited to do work, to do work in parallel, to load balance processing, or to call functions between languages.

@@ -115,6 +115,7 @@ fi
 /etc/rc.d/init.d/gearmand
 %attr(0755,gearmand,gearmand) %dir /var/log/gearmand
 %attr(0755,gearmand,gearmand) %dir /var/run/gearmand
+%attr(0755,gearmand,gearmand) %dir /var/lib/gearmand
 
 %files devel
 %defattr(-,root,root,-)

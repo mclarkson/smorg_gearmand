@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Script to build rpms from hudson
 
@@ -21,9 +21,17 @@ for DIR in SOURCES SPECS; do
         fi 
 done
 
+echo ----
+ls -lh
+echo ----
+cat POINTRELEASE
+echo ----
+
+. POINTRELEASE
+
 rm -rf TMP
-mkdir -p TMP BUILD BUILDROOT RPMS SRPMS|| exit 1 
-rm -rf TMP/* BUILDROOT/* BUILD/* RPMS/* SRPMS/*|| exit 1
+mkdir -p TMP BUILD RPMS SRPMS|| exit 1 
+rm -rf TMP/* BUILD/* RPMS/* SRPMS/*|| exit 1
 
 for BINARY in rpm rpmbuild; do 
         if [ ! -x "`which ${BINARY} 2> /dev/null`" ]; then 
@@ -95,18 +103,25 @@ for PKG in `( cd SPECS; ls *.spec )`; do
 		exit 2
 	}
 
+    #SVN_REV=`svn info SOURCES | sed -n '/Revision:/ { s/Revision: //p }'`
+    #
+	#echo "Subversion Revision: $SVN_REV"
+    #
+    #POINTRELEASE=$SVN_REV
+
 	echo "Package Release: $RELEASE"
-	echo "New Release No.: $RELEASE.${POINTRELEASE}"
+	echo "New Version No.: $VERSION-${POINTRELEASE}"
 
-        sed "s/\(^Release:\).*\$/\1 ${RELEASE}.${POINTRELEASE}/g" \
-		${BASE}/SPECS/${PKG} > ${BASE}/TMP/${PKG}
+    sed "s/^Release: .*/Release: ${POINTRELEASE}/g" \
+    ${BASE}/SPECS/${PKG} > ${BASE}/TMP/${PKG}
 
-        echo "Preparing sources for '${NAME}-${VERSION}'..."
+    echo "Preparing sources for '${NAME}-${VERSION}'..."
 
 	if [[ -d SOURCES/${NAME}-${VERSION} ]]; then
-		# Do nothing!
 		echo "Tarring existing source directory."
-		tar cvzf SOURCES/${NAME}-${VERSION}.tar.gz -C SOURCES ${NAME}-${VERSION} --exclude=.svn 
+        N="${NAME}-${VERSION}-${POINTRELEASE}"
+        cp -a SOURCES/${NAME}-${VERSION} SOURCES/$N
+		tar cvzf SOURCES/${N}.tar.gz -C SOURCES ${N} --exclude=.svn
 	else
 		echo "Unpacking source tarball."
 		tar -C TMP/ -xvzf SOURCES/${NAME}-${VERSION}.tar.gz
@@ -133,36 +148,41 @@ for PKG in `( cd SPECS; ls *.spec )`; do
 #
 #        rm -rf TMP/${NAME}-${VERSION}
 
-        # Especially for boost141 (only RH5 needs this):
-        export LIBRARY_PATH=/usr/lib64/boost141:/usr/lib/boost141
-        export LD_LIBRARY_PATH=/usr/lib64/boost141:/usr/lib/boost141
-        export CPATH=/usr/include/boost141
+    if [ -x "`which gpg 2> /dev/null`" -a ! -z "`gpg --list-keys \"${GPG_KEYNAME}\"`" ]; then 
+        echo "Building signed package for '${NAME}-${VERSION}'..." 
+        echo 
+        echo "Using key '${GPG_KEYNAME}' to sign packages..." 
+        rpmbuild -ba --sign --rcfile ${BASE}/TMP/rpmrc ${BASE}/TMP/${PKG} 
+    else 
+        echo "Building un-signed package for '${NAME}-${VERSION}'..." 
+        echo 
+        # RH5 -> rpmbuild -ba --rcfile ${BASE}/TMP/rpmrc ${BASE}/TMP/${PKG} 
+        # RH6 ->
+        if grep -qs 4\. /etc/redhat-release; then dist=.el4; fi
+        if grep -qs 5\. /etc/redhat-release; then dist=.el5; fi
+        if grep -qs 6\. /etc/redhat-release; then dist=.el6; fi
+        rpmbuild --define "_topdir ${BASE}" --define "dist $dist" -ba --rcfile ${BASE}/TMP/rpmrc ${BASE}/TMP/${PKG} 
+    fi
 
-        if [ -x "`which gpg 2> /dev/null`" -a ! -z "`gpg --list-keys \"${GPG_KEYNAME}\"`" ]; then 
-                echo "Building signed package for '${NAME}-${VERSION}'..." 
-                echo 
-                echo "Using key '${GPG_KEYNAME}' to sign packages..." 
-                rpmbuild -ba --sign --rcfile ${BASE}/TMP/rpmrc ${BASE}/TMP/${PKG} 
-        else 
-                echo "Building un-signed package for '${NAME}-${VERSION}'..." 
-                echo 
-                rpmbuild -ba --rcfile ${BASE}/TMP/rpmrc ${BASE}/TMP/${PKG} 
-        fi
+    RV=$?
 
-        RV=$?
+    if [ ${RV} -ne 0 ]; then 
+        GRV=$(expr ${GRV} + 1) 
+        echo 1>&2 
+        echo "Package '${NAME}-${VERSION}' failed to build!" 1>&2 
+        echo 1>&2 
+    else 
+        echo 
+        echo "${VERSION}.${POINTRELEASE}-${RELEASE}" \
+            > ${BASE}/TMP/version-release.txt
+        echo "Package '${NAME}-${VERSION}.${POINTRELEASE}' was built successfully!" 
+    fi
 
-        if [ ${RV} -ne 0 ]; then 
-                GRV=$(expr ${GRV} + 1) 
-                echo 1>&2 
-                echo "Package '${NAME}-${VERSION}' failed to build!" 1>&2 
-                echo 1>&2 
-        else 
-                echo 
-        echo "${VERSION}-${RELEASE}" > ${BASE}/TMP/version-release.txt
-                echo "Package '${NAME}-${VERSION}-${RELEASE}.${POINTRELEASE}' was built successfully!" 
-        fi
+    #rm -rf BUILD/${NAME}-${VERSION} SOURCES/${NAME}-${VERSION}.tar.gz 
 
-        #rm -rf BUILD/${NAME}-${VERSION} SOURCES/${NAME}-${VERSION}.tar.gz 
+    echo "Cleaning SOURCES directory..."
+    find SOURCES/$NAME-$VERSION* ! -name "*.tar.gz" -exec rm -rf {} \;
+
 done
 
 if [ ${GRV} -ne 0 ]; then 
@@ -170,9 +190,6 @@ if [ ${GRV} -ne 0 ]; then
         exit ${GRV} 
 fi
 
-#hudson_publish_rpm_to_svn.sh "$WORKSPACE" || { echo "unable to publish rpms"; exit 1; } 
-
-#scp -i /var/lib/hudson/TEMPSSHCRED_BYMC $BASE/RPMS/noarch/*.rpm mclarkson@10.11.12.168:Downloads/
 #scp -i /var/lib/hudson/TEMPSSHCRED_BYMC $BASE/RPMS/noarch/*.rpm mclarkson@frs.sourceforge.net:/home/frs/project/nagrestconf/Centos_5/
 
 exit 0

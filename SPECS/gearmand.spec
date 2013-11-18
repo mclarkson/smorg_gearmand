@@ -8,7 +8,7 @@
 
 Summary: Gearman Server and C Library
 Name: smorg-gearmand
-Version: 0.25
+Version: 0.33
 Release: 1
 License: BSD
 Group: System Environment/Libraries
@@ -19,7 +19,7 @@ Requires: sqlite, libevent >= 1.4, %boost >=  1.39
 Packager: Brian Aker <brian@tangent.org>
 
 #Source: http://launchpad.net/gearmand/trunk/%{version}/+download/gearmand-%{version}.tar.gz
-Source: smorg-gearmand-0.25.tar.gz
+Source: smorg-gearmand-0.33.tar.gz
 #Source1: gearmand.init
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 

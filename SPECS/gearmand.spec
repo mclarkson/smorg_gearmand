@@ -121,7 +121,7 @@ fi
 %files devel
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING NEWS README HACKING THANKS
-%{_libdir}/libgearman.a
+#%{_libdir}/libgearman.a
 %{_includedir}/libgearman/gearman.h
 %{_includedir}/libgearman-1.0/actions.h
 %{_includedir}/libgearman-1.0/aggregator.h

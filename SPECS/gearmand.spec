@@ -153,6 +153,10 @@ fi
 %{_includedir}/libgearman-1.0/version.h
 %{_includedir}/libgearman-1.0/visibility.h
 %{_includedir}/libgearman-1.0/worker.h
+%{_includedir}/libgearman-1.0/kill.h
+%{_includedir}/libgearman-1.0/limits.h
+%{_includedir}/libgearman-1.0/ostream.hpp
+%{_includedir}/libgearman-1.0/signal.h
 %{_libdir}/pkgconfig/gearmand.pc
 %{_libdir}/libgearman.so
 %{_mandir}/man3/gearman_actions_t.3
